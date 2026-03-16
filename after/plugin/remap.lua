@@ -9,6 +9,8 @@ vim.keymap.set("n", "<C-j>", "<cmd>m +1<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
+vim.keymap.set({'n'}, '<leader>d', '<cmd>bd<CR>') -- close current buffer faster
+
 -- Yank into system clipboard
 vim.keymap.set({'n', 'v'}, '<leader>y', '"+y') -- yank motion
 vim.keymap.set({'n', 'v'}, '<leader>Y', '"+Y') -- yank line
@@ -22,6 +24,10 @@ vim.keymap.set('n', '<leader>P', '"+P')  -- paste before cursor
 vim.keymap.set("n", "<leader>h", function()
 	vim.lsp.buf.hover()
 end)
+
+vim.o.winborder = 'rounded'
+
+vim.keymap.set('n', '<leader>k', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>p", "<cmd>bp<CR>")
 vim.keymap.set("n", "<leader>n", "<cmd>bn<CR>")
