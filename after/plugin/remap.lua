@@ -9,14 +9,11 @@ vim.keymap.set("n", "<C-j>", "<cmd>m +1<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
-vim.keymap.set({'n'}, '<leader>d', '<cmd>bd<CR>') -- close current buffer faster
+vim.keymap.set({'n'}, '<leader>d', '<Cmd>bd<CR>')
 
 -- Yank into system clipboard
 vim.keymap.set({'n', 'v'}, '<leader>y', '"+y') -- yank motion
 vim.keymap.set({'n', 'v'}, '<leader>Y', '"+Y') -- yank line
--- Delete into system clipboard
-vim.keymap.set({'n', 'v'}, '<leader>d', '"+d') -- delete motion
-vim.keymap.set({'n', 'v'}, '<leader>D', '"+D') -- delete line
 -- Paste from system clipboard
 vim.keymap.set('n', '<leader>p', '"+p')  -- paste after cursor
 vim.keymap.set('n', '<leader>P', '"+P')  -- paste before cursor
@@ -67,7 +64,7 @@ vim.api.nvim_set_keymap('n', '<F10>', [[:lua require"dap".step_over()<CR>]], { n
 vim.api.nvim_set_keymap('n', '<F11>', [[:lua require"dap".step_into()<CR>]], { noremap = true })
 vim.api.nvim_set_keymap('n', '<F12>', [[:lua require"dap.ui.widgets".hover()<CR>]], { noremap = true })
 
-vim.api.nvim_set_keymap('n', '<leader>dt', [[:lua require"dap".toggle_breakpoint()<CR>]], { noremap = true })
-vim.api.nvim_set_keymap('n', '<leader>dh', [[:lua require"dap.ui.widgets".hover()<CR>]], { noremap = true })
+-- vim.api.nvim_set_keymap('n', '<leader>dt', [[:lua require"dap".toggle_breakpoint()<CR>]], { noremap = true })
+-- vim.api.nvim_set_keymap('n', '<leader>dh', [[:lua require"dap.ui.widgets".hover()<CR>]], { noremap = true })
 
 --vim.api.nvim_set_keymap('n', '<F5>', [[:lua require"osv".launch({port = 8086})<CR>]], { noremap = true })
