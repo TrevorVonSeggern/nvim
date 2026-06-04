@@ -73,31 +73,12 @@ local packer = require('packer').startup(function(use)
 			--{'L3MON4D3/LuaSnip'},
 		}
 	}
-	use {
-		'stevearc/conform.nvim',
-		config = function()
-			require('conform').setup({
-				formatters_by_ft = {
-					javascript = { "eslint" },
-					typescript = { "eslint" },
-					javascriptreact = { "eslint" },
-					typescriptreact = { "eslint" },
-				},
-				format_on_save = {
-					timeout_ms = 500,
-				},
-			})
-		end
-	}
 	use { 'smjonas/inc-rename.nvim',
 		config = function()
 			require("inc_rename").setup()
 		end,
 	}
 end)
-
-
-vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 local cmp = require('cmp')
 cmp.setup({
@@ -122,16 +103,17 @@ require('mason-lspconfig').setup({
   },
 })
 
-require("nvim-dap-virtual-text").setup()
+--require("nvim-dap-virtual-text").setup()
+
 ----require("mason-nvim-dap").setup({
 	----ensure_installed = { "codelldb" }
 ----})
-local dap = require('dap')
-dap.adapters.lldb = {
-  type = 'executable',
-  command = '/usr/bin/lldb-vscode', -- adjust as needed, must be absolute path
-  name = 'lldb'
-}
+--local dap = require('dap')
+--dap.adapters.lldb = {
+  --type = 'executable',
+  --command = '/usr/bin/lldb-vscode', -- adjust as needed, must be absolute path
+  --name = 'lldb'
+--}
 
 --dap.configurations.cpp = {
   --{
@@ -149,11 +131,37 @@ dap.adapters.lldb = {
 --dap.configurations.c = dap.configurations.cpp
 --dap.configurations.rust = dap.configurations.cpp
 
+
+require('nvim-treesitter').setup {
+  -- Directory to install parsers and queries to (prepended to `runtimepath` to have priority)
+  install_dir = vim.fn.stdpath('data') .. '/site'
+}
+
+-- Fix treesitter kind-eq? predicate for Neovim 0.12+ (match stores arrays, not single nodes)
+local query = require "vim.treesitter.query"
+query.add_predicate("kind-eq?", function(match, _pattern, _bufnr, pred)
+	local nodes = match[pred[2]]
+	local types = { unpack(pred, 3) }
+
+	if type(nodes) == "table" and #nodes > 0 then
+		for _, node in ipairs(nodes) do
+			if not vim.tbl_contains(types, node:type()) then
+				return false
+			end
+		end
+		return true
+	elseif nodes then
+		return vim.tbl_contains(types, nodes:type())
+	end
+	return true
+end, { force = true })
+
 require('nvim-treesitter.configs').setup({
 	indent = {
 		enable = true,
 	},
 })
+
 
 
 return packer;
