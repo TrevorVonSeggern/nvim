@@ -3,51 +3,50 @@ vim.cmd [[packadd packer.nvim]]
 
 local packer = require('packer').startup(function(use)
 	use 'wbthomason/packer.nvim'
-	use {
-		'nvim-telescope/telescope.nvim', branch = '0.1.x',
-		requires = { {'nvim-lua/plenary.nvim'} }
-	}
-	use({
-		'folke/tokyonight.nvim',
-		config = function()
-			vim.cmd('colorscheme tokyonight-night')
-		end
-	})
-	use("norcalli/nvim-colorizer.lua")
-	use("folke/trouble.nvim")
-	use("windwp/nvim-autopairs")
 
-	use({"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"})
-	use("nvim-treesitter/playground")
-	--use("theprimeagen/harpoon")
-	--use("theprimeagen/refactoring.nvim")
-	use("preservim/nerdcommenter")
-	use("tpope/vim-fugitive")
-	use("nvim-treesitter/nvim-treesitter-context")
-
-
-	use('nvim-tree/nvim-web-devicons')
+	--- General editor plugins ---
 	use {
 		'nvim-tree/nvim-tree.lua',
 		requires = {
 			'nvim-tree/nvim-web-devicons', -- optional
 		},
 	}
-	use('vimwiki/vimwiki')
 	use('pocco81/auto-save.nvim')
 	use { "johmsalas/text-case.nvim",
 		config = function()
 			require('textcase').setup {}
 		end
 	}
-	use {
+	use({
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
 		config = function()
 			require("nvim-autopairs").setup {}
 		end
+	})
+	use({
+		'folke/tokyonight.nvim',
+		config = function()
+			vim.cmd('colorscheme tokyonight-night')
+		end
+	})
+	use("norcalli/nvim-colorizer.lua") -- inline css colors display as their color. #333
+	use {
+		'nvim-telescope/telescope.nvim', branch = '0.1.x',
+		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
+	--- Code specific ---
+	use("tpope/vim-fugitive")
+	use("preservim/nerdcommenter")
+	use('nvim-tree/nvim-web-devicons')
+	--use('vimwiki/vimwiki')
+	use("folke/trouble.nvim") --error in gutter or in syntax
+	use({
+		"nvim-treesitter/nvim-treesitter",
+		run = ":TSUpdate",
+		lazy = false
+	})
 	use {
 		'VonHeikemen/lsp-zero.nvim',
 		branch = 'v3.x',
@@ -71,33 +70,37 @@ local packer = require('packer').startup(function(use)
 
 			-- Snippets
 			--{'saadparwaiz1/cmp_luasnip'},
-			{'L3MON4D3/LuaSnip'},
+			--{'L3MON4D3/LuaSnip'},
 		}
 	}
-
+	use {
+		'stevearc/conform.nvim',
+		config = function()
+			require('conform').setup({
+				formatters_by_ft = {
+					javascript = { "eslint" },
+					typescript = { "eslint" },
+					javascriptreact = { "eslint" },
+					typescriptreact = { "eslint" },
+				},
+				format_on_save = {
+					timeout_ms = 500,
+				},
+			})
+		end
+	}
 	use { 'smjonas/inc-rename.nvim',
 		config = function()
 			require("inc_rename").setup()
 		end,
 	}
-
-	use {
-		"nvim-neotest/neotest",
-		requires = {
-			"nvim-neotest/nvim-nio",
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-
-			"Issafalcon/neotest-dotnet",
-		}
-	}
 end)
+
+
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
 local cmp = require('cmp')
 cmp.setup({
-	adapters = {
-		require("neotest-dotnet")
-	},
 	mapping = cmp.mapping.preset.insert({
 		['<C-Space>'] = cmp.mapping.complete(),
 		['<CR>'] = cmp.mapping.confirm({behavior = cmp.ConfirmBehavior.Insert,select = true}),
@@ -129,6 +132,7 @@ dap.adapters.lldb = {
   command = '/usr/bin/lldb-vscode', -- adjust as needed, must be absolute path
   name = 'lldb'
 }
+
 --dap.configurations.cpp = {
   --{
     --name = 'Launch',
@@ -144,12 +148,6 @@ dap.adapters.lldb = {
 --}
 --dap.configurations.c = dap.configurations.cpp
 --dap.configurations.rust = dap.configurations.cpp
-
-require("neotest").setup({
-	adapters = {
-		require("neotest-dotnet")
-	}
-})
 
 require('nvim-treesitter.configs').setup({
 	indent = {
